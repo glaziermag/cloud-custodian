@@ -1,0 +1,23 @@
+name: probe
+on:
+  push:
+    branches: [probe-base, probe-fix]
+  workflow_dispatch: {}
+permissions: {}
+jobs:
+  Publish:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        image:
+          - c7n-left
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v4
+      - name: ${{ matrix.image }} build (no push)
+        uses: ./.github/composites/docker-build-push
+        with:
+          name: ${{ matrix.image }}
+          push: false
+          platforms: linux/amd64
